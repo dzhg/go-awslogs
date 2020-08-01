@@ -1,0 +1,5 @@
+#! /bin/sh
+
+rm -rf target
+
+go build -o target/awslogs cmd/awslogs/main.go
