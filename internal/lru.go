@@ -5,6 +5,8 @@ import (
 	"errors"
 )
 
+// LRU is a simplified version of golang-lru from hashicorp
+// see: https://github.com/hashicorp/golang-lru
 type LRU struct {
 	size      int
 	evictList *list.List
@@ -79,5 +81,6 @@ func (u *LRU) removeOldest() {
 	element := u.evictList.Back()
 	if element != nil {
 		u.evictList.Remove(element)
+		delete(u.elements, element.Value.(*entry).key)
 	}
 }
