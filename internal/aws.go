@@ -13,6 +13,8 @@ type AWSError struct {
 	cause   error
 }
 
+var _ error = (*AWSError)(nil)
+
 func (e *AWSError) Error() string {
 	return fmt.Sprintf("%s: %s", e.context, e.cause.Error())
 }
