@@ -33,8 +33,6 @@ func NewAwsLogsClient() (*AWSLogsClient, error) {
 		return nil, awsError("load default AWS config", err)
 	}
 
-	cfg.Region = "us-west-2"
-
 	return &AWSLogsClient{cloudwatchlogs.New(cfg)}, nil
 }
 
