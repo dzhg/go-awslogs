@@ -9,11 +9,11 @@ import (
 )
 
 var streamsCmd = &cobra.Command{
-	Use: "streams <group>",
+	Use:   "streams <group>",
 	Short: "get log streams",
-	Long: `get log streams of a given group, sorted by last event time (desc)`,
-	Args: cobra.ExactArgs(1),
-	RunE: streams,
+	Long:  `get log streams of a given group, sorted by last event time (desc)`,
+	Args:  cobra.ExactArgs(1),
+	RunE:  streams,
 }
 
 func initStreamCmd() *cobra.Command {
