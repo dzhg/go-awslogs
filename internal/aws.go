@@ -93,9 +93,9 @@ type LogEvent struct {
 }
 
 func (c *AWSLogsClient) StreamLogEvents(params *GetLogsParams, ch chan *LogEvent, watch *bool) {
-	var input *cloudwatchlogs.FilterLogEventsInput
+	var originalInput *cloudwatchlogs.FilterLogEventsInput
 
-	input = &cloudwatchlogs.FilterLogEventsInput{
+	originalInput = &cloudwatchlogs.FilterLogEventsInput{
 		EndTime:             params.EndTime,
 		FilterPattern:       nil,
 		Interleaved:         nil,
@@ -107,11 +107,19 @@ func (c *AWSLogsClient) StreamLogEvents(params *GetLogsParams, ch chan *LogEvent
 		StartTime:           params.StartTime,
 	}
 
+	nextTokenInput := &cloudwatchlogs.FilterLogEventsInput{
+		LogGroupName: params.LogGroupName,
+		Limit:        params.Limit,
+		NextToken:    nil,
+	}
+
 	lru, err := NewLRU(int(*params.Limit))
 	if err != nil {
 		ch <- &LogEvent{Error: err}
 		return
 	}
+
+	input := originalInput
 
 	for {
 		req := c.client.FilterLogEventsRequest(input)
@@ -149,25 +157,13 @@ func (c *AWSLogsClient) StreamLogEvents(params *GetLogsParams, ch chan *LogEvent
 			// fetch again from 5 minutes ago
 			startTime := (time.Now().Add(-5 * time.Minute)).UnixNano() / int64(time.Millisecond)
 
-			input = &cloudwatchlogs.FilterLogEventsInput{
-				EndTime:             params.EndTime,
-				FilterPattern:       nil,
-				Interleaved:         nil,
-				Limit:               params.Limit,
-				LogGroupName:        params.LogGroupName,
-				LogStreamNamePrefix: nil,
-				LogStreamNames:      params.LogStreamNames,
-				NextToken:           nil,
-				StartTime:           &startTime,
-			}
+			originalInput.StartTime = &startTime
+			input = originalInput
 
 			continue
 		}
 
-		input = &cloudwatchlogs.FilterLogEventsInput{
-			LogGroupName: params.LogGroupName,
-			Limit:        params.Limit,
-			NextToken:    response.NextToken,
-		}
+		nextTokenInput.NextToken = response.NextToken
+		input = nextTokenInput
 	}
 }
