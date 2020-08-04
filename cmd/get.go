@@ -62,7 +62,7 @@ func getLogs(cmd *cobra.Command, args []string) error {
 		endTimePtr = &endTime
 	}
 
-	limit := int64(1000)
+	limit := int64(10000)
 	logGroupName := args[0]
 	var logStreamNames []string
 	if len(args) == 1 {

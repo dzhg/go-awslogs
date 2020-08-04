@@ -2,6 +2,7 @@
 .dir-locals.el
 *.iml
 target/
+go-awslogs
 # Created by .ignore support plugin (hsz.mobi)
 ### macOS template
 # General

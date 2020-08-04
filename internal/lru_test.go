@@ -40,4 +40,9 @@ func TestLRU(t *testing.T) {
 	if !ok {
 		t.Fatalf("expect entry: b")
 	}
+
+	_, ok = lru.Get("d")
+	if !ok {
+		t.Fatalf("expect entry: d")
+	}
 }

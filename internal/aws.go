@@ -123,11 +123,13 @@ func (c *AWSLogsClient) StreamLogEvents(params *GetLogsParams, ch chan *LogEvent
 			return
 		}
 
+		var cnt = 0
 		for _, e := range response.FilterLogEventsOutput.Events {
 			if _, ok := lru.Get(*e.EventId); ok {
+				cnt += 1
 				continue
 			} else {
-				lru.Add(*e.EventId, *e.Message)
+				lru.Add(*e.EventId, true)
 				ch <- &LogEvent{
 					Message:    *e.Message,
 					EventId:    *e.EventId,
@@ -144,11 +146,27 @@ func (c *AWSLogsClient) StreamLogEvents(params *GetLogsParams, ch chan *LogEvent
 			}
 			// watch
 			time.Sleep(time.Second)
+			// fetch again from 5 minutes ago
+			startTime := (time.Now().Add(-5 * time.Minute)).UnixNano() / int64(time.Millisecond)
+
+			input = &cloudwatchlogs.FilterLogEventsInput{
+				EndTime:             params.EndTime,
+				FilterPattern:       nil,
+				Interleaved:         nil,
+				Limit:               params.Limit,
+				LogGroupName:        params.LogGroupName,
+				LogStreamNamePrefix: nil,
+				LogStreamNames:      params.LogStreamNames,
+				NextToken:           nil,
+				StartTime:           &startTime,
+			}
+
 			continue
 		}
 
 		input = &cloudwatchlogs.FilterLogEventsInput{
 			LogGroupName: params.LogGroupName,
+			Limit:        params.Limit,
 			NextToken:    response.NextToken,
 		}
 	}
