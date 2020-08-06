@@ -18,7 +18,10 @@ var unitMap = map[string]int64{
 
 var agoPatten = regexp.MustCompile(`(\d+\.?\d*)\s?(s|second|seconds|m|min|minute|minutes|h|hr|hour|hours|d|day|days|w|wk|week|weeks)(?: ago)?`)
 
+// ParseString parses the string as millisecond
+// it also supports relative time presentation
 func ParseString(s string) (int64, error) {
+
 	// shortcut for relative time of now
 	t, err := ParseRelative(s, time.Now())
 	if err == nil {
@@ -33,6 +36,7 @@ func ParseString(s string) (int64, error) {
 
 	// let's try another format
 	t, err = time.Parse("01/15/2020 13:34:35 PST", s)
+
 	if err == nil {
 		return t.UnixNano() / int64(time.Millisecond), err
 	}
@@ -40,6 +44,7 @@ func ParseString(s string) (int64, error) {
 	return 0, errors.Wrap(err, "parse string to time")
 }
 
+// ParseRelative parses the string and returns the time relative to the input time
 func ParseRelative(s string, t time.Time) (time.Time, error) {
 	if agoPatten.MatchString(s) {
 		matches := agoPatten.FindStringSubmatch(s)

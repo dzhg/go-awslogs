@@ -18,6 +18,7 @@ type entry struct {
 	value interface{}
 }
 
+// NewLRU creates a new LRU instance
 func NewLRU(size int) (*LRU, error) {
 	if size <= 0 {
 		return nil, errors.New("size must be positive")
@@ -30,6 +31,7 @@ func NewLRU(size int) (*LRU, error) {
 	}, nil
 }
 
+// Add adds a new entry to the LRU instance
 func (u *LRU) Add(key, value interface{}) (evicted bool) {
 
 	if e, ok := u.elements[key]; ok {
@@ -50,6 +52,7 @@ func (u *LRU) Add(key, value interface{}) (evicted bool) {
 	return evict
 }
 
+// Get returns the entry by the given key
 func (u *LRU) Get(key interface{}) (value interface{}, ok bool) {
 	if element, ok := u.elements[key]; ok {
 		u.evictList.MoveToFront(element)
@@ -62,6 +65,7 @@ func (u *LRU) Get(key interface{}) (value interface{}, ok bool) {
 	return nil, false
 }
 
+// Remove deletes the key from the LRU instance
 func (u *LRU) Remove(key interface{}) bool {
 	if element, ok := u.elements[key]; ok {
 		u.evictList.Remove(element)
@@ -72,6 +76,7 @@ func (u *LRU) Remove(key interface{}) bool {
 	return false
 }
 
+// Contains check if the key is in the LRU instance
 func (u *LRU) Contains(key interface{}) bool {
 	_, ok := u.elements[key]
 	return ok

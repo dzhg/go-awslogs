@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// AWSError is a wrapper for any AWS related errors
 type AWSError struct {
 	context string
 	cause   error
@@ -23,10 +24,12 @@ func awsError(context string, err error) error {
 	return &AWSError{context, err}
 }
 
+// AWSLogsClient wraps a cloudwatchlogs.Client
 type AWSLogsClient struct {
 	client *cloudwatchlogs.Client
 }
 
+// NewAwsLogsClient creates a new AWSLogsClient
 func NewAwsLogsClient() (*AWSLogsClient, error) {
 	cfg, err := external.LoadDefaultAWSConfig()
 	if err != nil {
@@ -36,6 +39,7 @@ func NewAwsLogsClient() (*AWSLogsClient, error) {
 	return &AWSLogsClient{cloudwatchlogs.New(cfg)}, nil
 }
 
+// DescribeLogGroups is a wrapper of AWS API describe-log-groups
 func (c *AWSLogsClient) DescribeLogGroups(limit *int64, prefix, nextToken *string) (*cloudwatchlogs.DescribeLogGroupsResponse, error) {
 	req := c.client.DescribeLogGroupsRequest(&cloudwatchlogs.DescribeLogGroupsInput{
 		Limit:              limit,
@@ -52,11 +56,13 @@ func (c *AWSLogsClient) DescribeLogGroups(limit *int64, prefix, nextToken *strin
 	return res, nil
 }
 
+// LogStreamSorting represents the arguments for sorting of log streams
 type LogStreamSorting struct {
 	Descending *bool
 	OrderBy    cloudwatchlogs.OrderBy
 }
 
+// DescribeLogStreams is a wrapper of AWS API describe-log-streams
 func (c *AWSLogsClient) DescribeLogStreams(limit *int64, logGroupName *string, prefix *string, sorting *LogStreamSorting, nextToken *string) (*cloudwatchlogs.DescribeLogStreamsResponse, error) {
 	req := c.client.DescribeLogStreamsRequest(&cloudwatchlogs.DescribeLogStreamsInput{
 		Descending:          sorting.Descending,
@@ -76,6 +82,7 @@ func (c *AWSLogsClient) DescribeLogStreams(limit *int64, logGroupName *string, p
 	return res, nil
 }
 
+// GetLogsParams represents the parameters of function StreamLogEvents
 type GetLogsParams struct {
 	Limit          *int64
 	StartTime      *int64
@@ -84,14 +91,16 @@ type GetLogsParams struct {
 	LogStreamNames []string
 }
 
+// LogEvent represents an AWS log event
 type LogEvent struct {
 	Message    string
-	EventId    string
+	EventID    string
 	GroupName  string
 	StreamName string
 	Error      error
 }
 
+// StreamLogEvents streams the log events to the given channel
 func (c *AWSLogsClient) StreamLogEvents(params *GetLogsParams, ch chan *LogEvent, watch *bool) {
 	var originalInput *cloudwatchlogs.FilterLogEventsInput
 
@@ -134,13 +143,13 @@ func (c *AWSLogsClient) StreamLogEvents(params *GetLogsParams, ch chan *LogEvent
 		var cnt = 0
 		for _, e := range response.FilterLogEventsOutput.Events {
 			if _, ok := lru.Get(*e.EventId); ok {
-				cnt += 1
+				cnt++
 				continue
 			} else {
 				lru.Add(*e.EventId, true)
 				ch <- &LogEvent{
 					Message:    *e.Message,
-					EventId:    *e.EventId,
+					EventID:    *e.EventId,
 					GroupName:  *params.LogGroupName,
 					StreamName: *e.LogStreamName,
 					Error:      nil,

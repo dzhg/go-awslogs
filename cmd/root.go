@@ -11,6 +11,7 @@ var rootCmd = &cobra.Command{
 	Short: "awslogs is a tool for accessing AWS CloudWatch Logs",
 }
 
+// Execute executes the rootCmd
 func Execute() {
 	// do not sort the commands, keep the order as they are added
 	cobra.EnableCommandSorting = false
