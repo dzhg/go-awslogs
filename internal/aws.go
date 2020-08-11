@@ -159,6 +159,7 @@ func (c *AWSLogsClient) StreamLogEvents(params *GetLogsParams, ch chan *LogEvent
 
 		if response.NextToken == nil {
 			if !*watch {
+				close(ch)
 				return
 			}
 			// watch
