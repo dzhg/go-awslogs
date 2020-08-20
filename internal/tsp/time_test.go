@@ -20,7 +20,7 @@ func rfc3339(s string) time.Time {
 }
 
 func TestParseStandard(t *testing.T) {
-	s := "08/14/2020 15:31:36 PDT"
+	s := "08/14/2020 15:31:36 -07:00"
 	ts, err := ParseString(s)
 	if err != nil {
 		t.Fatalf(err.Error())
@@ -32,7 +32,7 @@ func TestParseStandard(t *testing.T) {
 	}
 
 	if ts != expected.UnixNano()/int64(time.Millisecond) {
-		t.Fatalf("expected %d, but got %d", expected.UnixNano(), ts)
+		t.Fatalf("expected %d, but got %d", expected.UnixNano()/int64(time.Millisecond), ts)
 	}
 }
 
