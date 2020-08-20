@@ -35,7 +35,7 @@ func ParseString(s string) (int64, error) {
 	}
 
 	// let's try another format
-	t, err = time.Parse("01/15/2020 13:34:35 PST", s)
+	t, err = time.Parse("01/02/2006 15:04:05 MST", s)
 
 	if err == nil {
 		return t.UnixNano() / int64(time.Millisecond), err

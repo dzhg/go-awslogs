@@ -19,6 +19,23 @@ func rfc3339(s string) time.Time {
 	return safeParse(time.RFC3339, s)
 }
 
+func TestParseStandard(t *testing.T) {
+	s := "08/14/2020 15:31:36 PDT"
+	ts, err := ParseString(s)
+	if err != nil {
+		t.Fatalf(err.Error())
+	}
+
+	expected, err := time.Parse(time.RFC3339, "2020-08-14T15:31:36-07:00")
+	if err != nil {
+		t.Fatalf(err.Error())
+	}
+
+	if ts != expected.UnixNano()/int64(time.Millisecond) {
+		t.Fatalf("expected %d, but got %d", expected.UnixNano(), ts)
+	}
+}
+
 func TestParseRelative(t *testing.T) {
 	type args struct {
 		s string

@@ -174,6 +174,7 @@ func (c *AWSLogsClient) StreamLogEvents(params *GetLogsParams, ch chan *LogEvent
 		}
 
 		nextTokenInput.NextToken = response.NextToken
+		nextTokenInput.EndTime = params.EndTime
 		input = nextTokenInput
 	}
 }

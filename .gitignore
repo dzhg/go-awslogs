@@ -3,6 +3,7 @@
 *.iml
 target/
 go-awslogs
+go-awslogs.*
 # Created by .ignore support plugin (hsz.mobi)
 ### macOS template
 # General
