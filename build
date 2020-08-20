@@ -2,4 +2,19 @@
 
 rm -rf target
 
-go build -o target/awslogs
+sha1=`git rev-parse HEAD | cut -c -8`
+builtAt=`date -u +"%Y-%m-%dT%H:%M:%SZ"`
+version="0.0.1"
+
+VAR_PREFIX="github.com/dzhg/go-awslogs/cmd"
+
+
+LDFLAGS="\
+-X '${VAR_PREFIX}.version=${version}' \
+-X '${VAR_PREFIX}.builtAt=${builtAt}' \
+-X '${VAR_PREFIX}.commitSHA1=${sha1}' \
+"
+
+go build -ldflags "${LDFLAGS}" -o target/go-awslogs
+#env GOOS=linux GOARCH=amd64 go build ${LDFLAGS} -o target/go-awslogs.linux.amd64
+
