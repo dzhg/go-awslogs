@@ -16,5 +16,5 @@ LDFLAGS="\
 "
 
 go build -ldflags "${LDFLAGS}" -o target/go-awslogs
-#env GOOS=linux GOARCH=amd64 go build ${LDFLAGS} -o target/go-awslogs.linux.amd64
+env GOOS=linux GOARCH=amd64 go build -ldflags "${LDFLAGS}" -o target/go-awslogs.linux.amd64
 

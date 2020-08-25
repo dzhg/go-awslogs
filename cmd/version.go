@@ -23,5 +23,5 @@ func initVersionCmd() *cobra.Command {
 }
 
 func printVersion(cmd *cobra.Command, args []string) {
-	fmt.Printf("go-awslogs (%s %s)\nVersion: %s\nBuild At: %s, Git Commit ID (SHA1): %s\n", runtime.GOOS, runtime.GOARCH, version, builtAt, commitSHA1)
+	fmt.Printf("go-awslogs (%s %s)\nVersion: %s\nBuilt At: %s, Git Commit ID (SHA1): %s\n", runtime.GOOS, runtime.GOARCH, version, builtAt, commitSHA1)
 }
