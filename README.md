@@ -81,3 +81,8 @@ AWS_PROFILE=my_other_profile go-awslogs groups
 ```
 
 Also, you can set environment variables directly for `AWS_SECRET_ACCESS_KEY`, `AWS_ACCESS_KEY` and `AWS_REGION` etc.
+
+## More Information
+
+* [Introducing go-awslogs](https://dzhg.dev/posts/2020/09/introducing-go-awslogs/): The background of `go-awslogs` project
+* [awslogs](https://github.com/jorgebastida/awslogs): The origina `awslogs` project in Python
