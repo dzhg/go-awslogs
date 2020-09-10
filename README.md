@@ -82,6 +82,12 @@ AWS_PROFILE=my_other_profile go-awslogs groups
 
 Also, you can set environment variables directly for `AWS_SECRET_ACCESS_KEY`, `AWS_ACCESS_KEY` and `AWS_REGION` etc.
 
+## Build
+
+### Mac
+
+Clone this repository and run `./build` script. It will compile the project and generate binaries for both Mac and Linux.
+
 ## More Information
 
 * [Introducing go-awslogs](https://dzhg.dev/posts/2020/09/introducing-go-awslogs/): The background of `go-awslogs` project
